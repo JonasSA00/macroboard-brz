@@ -19,6 +19,11 @@ void ledSetRandom(int ledIndex) {
     strip.show();
 }
 
+void ledSetColor(int ledIndex, uint8_t r, uint8_t g, uint8_t b) {
+    strip.setPixelColor(ledIndex, strip.Color(r, g, b));
+    strip.show();
+}
+
 void ledClear(int ledIndex) {
     strip.setPixelColor(ledIndex, 0);
     strip.show();

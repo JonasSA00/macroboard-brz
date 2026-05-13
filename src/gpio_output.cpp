@@ -34,3 +34,10 @@ void gpioOutputSet(int buttonIndex, bool state) {
         digitalWrite(pin, state ? HIGH : LOW);
     }
 }
+
+int gpioOutputGetPin(int buttonIndex) {
+    if (buttonIndex < 0 || buttonIndex >= NUM_BUTTONS) {
+        return -1;
+    }
+    return GPIO_LOOKUP[buttonIndex];
+}
