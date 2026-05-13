@@ -1,0 +1,14 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "xaver.clang-format",
+    "clang-format.executable": "/usr/bin/clang-format",
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cpp": "cpp"
+    },
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "platformio-ide.customPATH": "",
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    }
+}

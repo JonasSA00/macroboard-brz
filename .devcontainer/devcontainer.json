@@ -1,0 +1,33 @@
+{
+  "name": "Macroboard BRZ - ESP32-S2",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "platformio.platformio-ide",
+        "ms-vscode.cpptools",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "xaver.clang-format"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "C_Cpp.default.compilerPath": "",
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "clangd.path": "/usr/bin/clangd",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "xaver.clang-format"
+      }
+    }
+  },
+  "runArgs": [
+    "--privileged",
+    "-v", "/dev:/dev"
+  ],
+  "postCreateCommand": "platformio pkg install",
+  "remoteUser": "root"
+}
