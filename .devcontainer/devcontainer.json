@@ -25,8 +25,12 @@
     }
   },
   "mounts": [
-    "type=volume,source=platformio-home,target=/root/.platformio"
+    "type=volume,source=platformio-home,target=/root/.platformio",
+    "type=volume,source=ssh-home,target=/root/.ssh"
   ],
+  "remoteEnv": {
+    "SSH_AUTH_SOCK": "/ssh-agent"
+  },
   "runArgs": [
     "--privileged",
     "-v", "/dev:/dev"
