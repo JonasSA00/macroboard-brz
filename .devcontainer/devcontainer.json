@@ -25,12 +25,17 @@
     }
   },
   "mounts": [
-    "type=volume,source=platformio-home,target=/root/.platformio"
+    "type=volume,source=platformio-home,target=/root/.platformio",
+    "type=volume,source=ssh-home,target=/root/.ssh",
+    "type=bind,source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent"
   ],
+  "remoteEnv": {
+    "SSH_AUTH_SOCK": "/ssh-agent"
+  },
   "runArgs": [
     "--privileged",
     "-v", "/dev:/dev"
   ],
-  "postCreateCommand": "platformio pkg install",
+  "postCreateCommand": "mkdir -p /root/.ssh && chmod 700 /root/.ssh && (test -f /root/.ssh/config || printf '%s\n' 'Host github.com' '  HostName github.com' '  User git' '  IdentityFile /root/.ssh/id_ed25519_macroboard_brz' '  IdentitiesOnly yes' '  StrictHostKeyChecking accept-new' > /root/.ssh/config) && chmod 600 /root/.ssh/config && platformio pkg install",
   "remoteUser": "root"
 }
