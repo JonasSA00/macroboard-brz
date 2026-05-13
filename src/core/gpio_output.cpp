@@ -1,4 +1,4 @@
-#include "gpio_output.h"
+#include "core/gpio_output.h"
 
 // Lookup table: button index → GPIO pin (-1 = no associated GPIO)
 static constexpr int GPIO_LOOKUP[NUM_BUTTONS] = {

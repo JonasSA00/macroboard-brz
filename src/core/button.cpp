@@ -1,4 +1,4 @@
-#include "button.h"
+#include "core/button.h"
 
 static bool btnState[NUM_BUTTONS];
 static bool lastBtnState[NUM_BUTTONS];
@@ -8,9 +8,9 @@ static unsigned long lastDebounceTime[NUM_BUTTONS];
 void buttonsInit() {
     for (int i = 0; i < NUM_BUTTONS; i++) {
         pinMode(BUTTON_PINS[i], INPUT_PULLUP);
-        btnState[i] = HIGH;
-        lastBtnState[i] = HIGH;
-        ledToggle[i] = false;
+        btnState[i]         = HIGH;
+        lastBtnState[i]     = HIGH;
+        ledToggle[i]        = false;
         lastDebounceTime[i] = 0;
     }
 }
@@ -29,8 +29,10 @@ bool buttonUpdate(int index) {
             btnState[index] = reading;
 
             if (btnState[index] == LOW) {
-                // Toggle on press
-                ledToggle[index] = !ledToggle[index];
+                // Toggle on press (if enabled)
+                if (!buttonToggleDisabled) {
+                    ledToggle[index] = !ledToggle[index];
+                }
                 pressed = true;
             }
         }
@@ -43,3 +45,19 @@ bool buttonUpdate(int index) {
 bool buttonIsActive(int index) {
     return ledToggle[index];
 }
+
+void buttonClear(int index) {
+    if (index < 0 || index >= NUM_BUTTONS) {
+        return;
+    }
+    ledToggle[index] = false;
+}
+
+void buttonSetActive(int index, bool state) {
+    if (index < 0 || index >= NUM_BUTTONS) {
+        return;
+    }
+    ledToggle[index] = state;
+}
+
+bool buttonToggleDisabled = false;

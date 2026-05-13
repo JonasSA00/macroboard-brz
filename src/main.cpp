@@ -2,10 +2,15 @@
 
 #include "config.h"
 
-#include "button.h"
-#include "gpio_output.h"
-#include "leds.h"
-#include "cruise_control.h"
+#include "core/button.h"
+#include "core/gpio_output.h"
+#include "core/leds.h"
+#include "cruise/cruise_control.h"
+#include "games/minesweeper/minesweeper.h"
+
+enum Mode { NORMAL, GAME_SELECTION, MINESWEEPER };
+
+static Mode currentMode = NORMAL;
 
 void setup() {
     Serial.begin(115200);
@@ -20,29 +25,97 @@ void setup() {
 }
 
 void loop() {
-    cruiseControlUpdateLEDs(); // Update flashing LEDs
+    switch (currentMode) {
+        case NORMAL:
+            // Clear all LEDs first
+            for (int i = 0; i < LED_COUNT; i++) {
+                ledClear(i);
+            }
+            cruiseControlUpdateLEDs();  // Update flashing LEDs
+            break;
+        case GAME_SELECTION:
+            // Set the Minesweeper selection button LED to red
+            ledSetColor(LED_MAP[0], 255, 0, 0);
+            for (int i = 0; i < LED_COUNT; i++) {
+                if (i != LED_MAP[0]) {
+                    ledClear(i);
+                }
+            }
+            break;
+        case MINESWEEPER:
+            minesweeperUpdateLEDs();
+            break;
+    }
+
+    buttonToggleDisabled = (currentMode == MINESWEEPER);
 
     for (int i = 0; i < NUM_BUTTONS; i++) {
         if (buttonUpdate(i)) {
-            int ledIndex = LED_MAP[i];
-            bool active  = buttonIsActive(i);
+            bool active = buttonIsActive(i);
             int gpioPin = gpioOutputGetPin(i);
 
-            Serial.printf("Button %d pressed - LED %d - GPIO %s", i, ledIndex, gpioPin >= 0 ? String(gpioPin).c_str() : "none");
+            Serial.printf("Button %d pressed - Mode %d - GPIO %s",
+                          i,
+                          currentMode,
+                          gpioPin >= 0 ? String(gpioPin).c_str() : "none");
 
-            // Handle cruise control buttons
-            if (i == 0 || i == 3 || i == 6 || i == 9) {
-                cruiseControlHandleButton(i);
-            } else {
-                // Non-cruise buttons: random colors
-                if (active) {
-                    ledSetRandom(ledIndex);
-                } else {
-                    ledClear(ledIndex);
-                }
+            switch (currentMode) {
+                case NORMAL:
+                    // Handle cruise control buttons
+                    if (i == 0 || i == 3 || i == 6 || i == 9) {
+                        cruiseControlHandleButton(i);
+                    } else if (i == 11) {
+                        // Enter game selection
+                        currentMode = GAME_SELECTION;
+                        buttonClear(i);
+                        gpioOutputSet(i, false);
+                        Serial.println(" -> Entered Game Selection");
+                    } else {
+                        // Non-cruise buttons: random colors
+                        int ledIndex = LED_MAP[i];
+                        if (active) {
+                            ledSetRandom(ledIndex);
+                        } else {
+                            ledClear(ledIndex);
+                        }
+                    }
+                    if (i != 11) {
+                        gpioOutputSet(i, active);
+                    }
+                    break;
+                case GAME_SELECTION:
+                    if (i == 0) {
+                        // Select Minesweeper
+                        currentMode = MINESWEEPER;
+                        minesweeperInit();
+                        Serial.println(" -> Started Minesweeper");
+                    } else if (i == 11) {
+                        // Back to normal
+                        currentMode = NORMAL;
+                        buttonClear(i);
+                        gpioOutputSet(i, false);
+                        Serial.println(" -> Back to Normal");
+                    }
+                    // No GPIO for game selection
+                    break;
+                case MINESWEEPER:
+                    if (i == 11 && minesweeperIsFinished()) {
+                        // Only allow exit once the game has finished
+                        bool wasGameOver = minesweeperIsFinished() &&
+                                           !minesweeperIsWon();  // Assuming we add isWon
+                        currentMode = NORMAL;
+                        buttonClear(i);
+                        gpioOutputSet(i, false);
+                        Serial.println(" -> Back to Normal");
+                        if (wasGameOver) {
+                            // No latching on lose
+                        }
+                    } else {
+                        minesweeperHandleButton(i);
+                    }
+                    // No GPIO while in Minesweeper
+                    break;
             }
-
-            gpioOutputSet(i, active);
 
             Serial.printf(" -> %s\n", active ? "ON" : "OFF");
         }
