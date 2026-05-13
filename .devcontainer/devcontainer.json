@@ -11,19 +11,22 @@
       "extensions": [
         "platformio.platformio-ide",
         "ms-vscode.cpptools",
-        "llvm-vs-code-extensions.vscode-clangd",
-        "xaver.clang-format"
+        "xaver.clang-format",
+        "mhutchie.git-graph"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
         "C_Cpp.default.compilerPath": "",
-        "C_Cpp.intelliSenseEngine": "disabled",
-        "clangd.path": "/usr/bin/clangd",
+        "platformio-ide.useBuiltinPIOCore": false,
+        "platformio-ide.customPATH": "/usr/local/bin:/usr/bin:/bin",
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "xaver.clang-format"
       }
     }
   },
+  "mounts": [
+    "type=volume,source=platformio-home,target=/root/.platformio"
+  ],
   "runArgs": [
     "--privileged",
     "-v", "/dev:/dev"

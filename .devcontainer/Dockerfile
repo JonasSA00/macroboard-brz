@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     clang-format \
     clang-tidy \
+    clangd \
     udev \
     usbutils \
     && rm -rf /var/lib/apt/lists/*

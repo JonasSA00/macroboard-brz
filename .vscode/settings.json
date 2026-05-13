@@ -6,8 +6,8 @@
         "*.h": "cpp",
         "*.cpp": "cpp"
     },
-    "C_Cpp.intelliSenseEngine": "disabled",
-    "platformio-ide.customPATH": "",
+    "C_Cpp.intelliSenseEngine": "default",
+    "platformio-ide.customPATH": "/usr/local/bin:/usr/bin:/bin",
     "[cpp]": {
         "editor.defaultFormatter": "xaver.clang-format"
     }

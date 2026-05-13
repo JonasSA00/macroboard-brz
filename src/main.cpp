@@ -1,7 +1,8 @@
 #include <Arduino.h>
 
-#include "button.h"
 #include "config.h"
+
+#include "button.h"
 #include "gpio_output.h"
 #include "leds.h"
 
@@ -20,7 +21,7 @@ void loop() {
     for (int i = 0; i < NUM_BUTTONS; i++) {
         if (buttonUpdate(i)) {
             int ledIndex = LED_MAP[i];
-            bool active = buttonIsActive(i);
+            bool active  = buttonIsActive(i);
 
             if (active) {
                 ledSetRandom(ledIndex);
