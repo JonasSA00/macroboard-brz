@@ -42,6 +42,13 @@ bool buttonUpdate(int index) {
     return pressed;
 }
 
+bool buttonIsHeld(int index) {
+    if (index < 0 || index >= NUM_BUTTONS) {
+        return false;
+    }
+    return btnState[index] == LOW;
+}
+
 bool buttonIsActive(int index) {
     return ledToggle[index];
 }

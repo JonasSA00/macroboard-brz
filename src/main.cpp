@@ -79,9 +79,6 @@ void loop() {
                             ledClear(ledIndex);
                         }
                     }
-                    if (i != 11) {
-                        gpioOutputSet(i, active);
-                    }
                     break;
                 case GAME_SELECTION:
                     if (i == 0) {
@@ -118,6 +115,21 @@ void loop() {
             }
 
             Serial.printf(" -> %s\n", active ? "ON" : "OFF");
+        }
+    }
+
+    // GPIO outputs are momentary: HIGH only while the button is physically held.
+    if (currentMode == NORMAL) {
+        for (int i = 0; i < NUM_BUTTONS; i++) {
+            if (gpioOutputGetPin(i) >= 0) {
+                gpioOutputSet(i, buttonIsHeld(i));
+            }
+        }
+    } else {
+        for (int i = 0; i < NUM_BUTTONS; i++) {
+            if (gpioOutputGetPin(i) >= 0) {
+                gpioOutputSet(i, false);
+            }
         }
     }
 }

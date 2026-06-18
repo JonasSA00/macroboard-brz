@@ -3,15 +3,9 @@
 #include "config.h"
 
 // Cruise control states
-enum CruiseSystemState {
-    CRUISE_SYSTEM_OFF,
-    CRUISE_SYSTEM_ON
-};
+enum CruiseSystemState { CRUISE_SYSTEM_OFF, CRUISE_SYSTEM_ON };
 
-enum CruiseEngagedState {
-    CRUISE_DISENGAGED,
-    CRUISE_ENGAGED
-};
+enum CruiseEngagedState { CRUISE_DISENGAGED, CRUISE_ENGAGED };
 
 // Initialize cruise control
 void cruiseControlInit();

@@ -8,6 +8,9 @@ void buttonsInit();
 // Poll a single button, returns true if a press event was detected
 bool buttonUpdate(int index);
 
+// Returns true while the debounced button is physically held down
+bool buttonIsHeld(int index);
+
 // Returns the current toggle state for a button (true = active)
 bool buttonIsActive(int index);
 
